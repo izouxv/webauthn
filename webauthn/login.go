@@ -44,7 +44,7 @@ func (w *WebAuthn) GetLoginOptions(user User, session Session) (*protocol.Creden
 		options.PublicKey.AllowCredentials = allowCredentials
 	}
 
-	if err := session.Set(w.Config.SessionKeyPrefixChallenge+".login", []byte(chal)); err != nil {
+	if err := session.Set(w.Config.SessionKeyPrefixChallenge+".login", b2s([]byte(chal))); err != nil {
 		return nil, err
 	}
 
@@ -72,7 +72,7 @@ func (w *WebAuthn) ParseAndFinishLogin(assertionResponse protocol.AssertionRespo
 	if err != nil {
 		return nil, protocol.ErrInvalidRequest.WithDebug("missing challenge in session")
 	}
-	chal, ok := rawChal.([]byte)
+	chal, ok := s2b(rawChal) //rawChal.([]byte)
 	if !ok {
 		return nil, protocol.ErrInvalidRequest.WithDebug("invalid challenge session value")
 	}
